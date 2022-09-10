@@ -1,0 +1,140 @@
+<!--load.html is an intermediate template that lets us get around the fact that we need to pass the user id
+    through the URL in order to display the User's rewards, which we want on the home page. (Don't think we
+    can pass this data going directly from the google login to the homepage). 
+    So load.html is like a basic loading screen, just make it have like basic exergam instructions and stuff-->
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% bootstrap_messages %}
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+/* Center the loader */
+#loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 120px;
+  height: 120px;
+  margin: -76px 0 0 -76px;
+<!--  border: 16px solid #f3f3f3;-->
+  border-top: 16px solid blue;
+  border-right: 16px solid green;
+  border-bottom: 16px solid red;
+  border-left: 16px solid pink;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Add animation to "page content" */
+.animate-bottom {
+  position: relative;
+  -webkit-animation-name: animatebottom;
+  -webkit-animation-duration: 1s;
+  animation-name: animatebottom;
+  animation-duration: 1s
+}
+
+@-webkit-keyframes animatebottom {
+  from { bottom:-100px; opacity:0 }
+  to { bottom:0px; opacity:1 }
+}
+
+@keyframes animatebottom {
+  from{ bottom:-100px; opacity:0 }
+  to{ bottom:0; opacity:1 }
+}
+
+#myDiv {
+  display: none;
+  text-align: center;
+}
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Positioning of image and text */
+.hero-image { background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://i.pinimg.com/564x/8e/df/80/8edf806427df507529b7ca0b393af041--gradient-color-gradient-wall.jpg"); height: 50%; background-position: center; background-repeat: no-repeat; background-size: cover; position: relative; }
+
+.hero-text {
+  text-align: center;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: antiquewhite;
+}
+
+.hero-text button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 10px 25px;
+  color: black;
+  background-color: #ddd;
+  text-align: center;
+  cursor: pointer;
+}
+
+.hero-text button:hover {
+  background-color: #555;
+  color: white;
+}
+</style>
+</head>
+<body onload="myFunction()" style="margin:0; background-color:black;" >
+    
+
+<div id="loader"></div>
+
+<div style="display:none;" id="myDiv" class="animate-bottom">
+  {% if user.is_authenticated %}
+  <div class="hero-image">
+    <div class="hero-text">
+      <h1 style="font-size:50px">Welcome!</h1>
+      <h2>Track your exercise and earn points/rewards for your exercise!</h2>
+      <button class="btn btn-primary"><a href="{% url 'exergam:home' %}">Home</a></button>
+    </div>
+  </div>
+  <div class="container text-center text-white">
+      <p></p>
+      <p>How to use exergam:</p>
+      <p>1. Set up your profile at your homepage</p>
+      <p>2. Log your exercise and earn points and badges to climb the leaderboards!</p>
+      <p>3. Write posts for anything: meeting up, or talking anything exercise</p>
+      <p>4. Follow your friends to see their posts</p>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+var myVar;
+
+function myFunction() {
+  myVar = setTimeout(showPage, 750);
+}
+
+function showPage() {
+  document.getElementById("loader").style.display = "none";
+  document.getElementById("myDiv").style.display = "block";
+}
+</script>
+

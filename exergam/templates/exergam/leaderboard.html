@@ -1,0 +1,233 @@
+﻿{% load static %}
+
+{% load socialaccount %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% bootstrap_messages %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="{% static 'exergam/style.css' %}">
+    <title>Leaderboard</title>
+</head>
+
+<body style="background-color:#f7f7fa">
+    <div class="">
+        {% if user.is_authenticated %}
+        <nav class="navbar navbar-expand-lg navbar-light sticky-top"
+            style="background-color: #fff;border-bottom: 1px solid rgba(var(--b6a,219,219,219),1)">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="container">
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav">
+                        <a class="navbar-brand" href="{% url 'exergam:feed' %}">
+                            <img src="../../static/images/icons/eg_logo.png" alt="exergam" style="height: 50px;"></a>
+                    </ul>
+                </div>
+
+                <form action="{% url 'exergam:find' %}" method="get" class="form-inline my-2 my-lg-0 col mr-5">
+                    {% csrf_token %}
+                    <input class="form-control" type="text" placeholder="Search" id="search_user" name="search_user"
+                        aria-label="Search">
+                    <input type="submit" value="&#x1F50D;" class="btn btn-info my-2 my-sm-0">
+                </form>
+
+                <ul class="nav navbar-nav ml-auto d-flex align-items-baseline">
+                    <li class="nav-item active mr-1">
+                        <a class="nav-link text-white" href="{% url 'exergam:feed' %}"> <img
+                                src="../../static/images/icons/home.PNG" alt="" style="height: 30px;filter: invert(1)">
+                            <span class="sr-only">(current)</span></a>
+                    </li>
+
+                    <li class="nav-item active mr-1">
+                        <a class="nav-link text-white" href="{% url 'exergam:leaderboard' %}"><img
+                                src="../../static/images/icons/medal.png" alt="" style="height: 30px;"></a>
+                    </li>
+
+                    <li class="nav-item dropdown mr-1">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:#000000">
+                            <img src="{% static user.picture.url %}" alt="Profile" style="
+                            width: 45px;
+                            height: 45px;
+                            border-radius: 50%;">
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'exergam:profile' user.id %}">My Profile</a></li>
+                            <div class="dropdown-divider"></div>
+                            <li><a class="dropdown-item" href="{% url 'exergam:logout' %}">Log Out</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown mr-1">
+                        <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            <img src="../../static/images/add.png" alt="Profile" style="height: 30px; width: 30px;">
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" data-toggle="modal" data-target="#AddPostModal" href="#"> Add
+                                    Post</a></li>
+                            <li><a class="dropdown-item" data-toggle="modal" data-target="#AddExerciseModal"
+                                    href="#">Add Exercise</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="modal fade" id="AddPostModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Add Post</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h3 class="">Add a Location to your Post</h3>
+                        <form action="{% url 'exergam:select_location' %}" method="GET" class='form'>
+                            {% csrf_token %}
+                            <input type="text" class="form-control" placeholder="Where did you go?" name="location" ,
+                                id="location">
+                            <div class="d-flex mt-3 mx-auto">
+                                <a class="btn btn-outline-danger mr-1" href="{% url 'exergam:new_post' 1 %}">Skip</a>
+                                <input type="submit" value="Search" class="btn btn-primary">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="AddExerciseModal" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Add Exercise</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <form action="{% url 'exergam:upload' %}" method="post" class='form'>
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label class="text-primary">Exercise Type</label>
+                                <select name="exercise_type_dropdown" id="exercise_type_dropdown">
+                                    <option value="Basketball">Basketball</option>
+                                    <option value="Baseball">Baseball</option>
+                                    <option value="Climbing">Climbing</option>
+                                    <option value="Football">Football</option>
+                                    <option value="Frisbee">Frisbee</option>
+                                    <option value="Soccer">Soccer</option>
+                                    <option value="Spikeball">Spikeball</option>
+                                    <option value="Swimming">Swimming</option>
+                                    <option value="Tennis">Tennis</option>
+                                    <option value="Track + Field">Track + Field</option>
+                                    <option value="Volleyball">Volleyball</option>
+                                    <option value="Walking">Walking</option>
+                                    <option value="Weightlifting">Weightlifting</option>
+                                    <option value="Yoga">Yoga</option>
+                                    <option value="Cardio">Cardio</option>
+                                    <option value="Strength">Strength</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="text-primary">Description</label>
+                                <input type="text" class="form-control" placeholder="What did you do?"
+                                    name="description" , id="description">
+                            </div>
+                            <div class="form-group">
+                                <label class="text-primary" for="exampleInputPassword1">Date</label>
+                                <input type="datetime-local" class="form-control" placeholder="YYYY-MM-DD HH:MM"
+                                    id="exercise_date" name="exercise_date">
+                            </div>
+                            <div class="form-group">
+                                <label class="text-primary" for="exampleInputPassword1">Duration in minutes</label>
+                                <input type="text" class="form-control"
+                                    placeholder="For how long did you perform this activity?" id="exercise_duration"
+                                    name="exercise_duration">
+                            </div>
+                            <div class="mx-auto">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <input class="btn btn-outline-primary"
+                                    onclick="return confirm('Are you Sure? You will not be able to delete this exercise.')"
+                                    type="submit" value="Upload">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div>
+                <img src="../../static/images/icons/crown.png" class="rounded mx-auto d-block" style="
+                vertical-align: middle;
+                width: 15%;
+                height: auto;
+                border-radius: 50%;
+            ">
+            </div>
+            <h1 class="text-primary text-center display-3">Leaderboard</h1>
+
+            <ul class="nav nav-pills mb-3 " id="pills-tab" role="tablist">
+                <li class="nav-item ml-auto" role="presentation">
+                    <a class="nav-link active" href="#">All</a>
+                </li>
+                <li class="nav-item mr-auto" role="presentation">
+                    <a class="nav-link " href="{% url 'exergam:myleaderboard' %}">Personal</a>
+                </li>
+            </ul>
+
+            {% if ordered_user_list %}
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center" scope="col">Rank</th>
+                        <th class="" scope="col">User</th>
+                        <th class="text-center" scope="col">XP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for athlete in ordered_user_list %}
+                    <tr>
+                        <th class="text-center align-middle" scope="row">{{forloop.counter}}</th>
+                        <td>
+                            <a href="{% url 'exergam:profile' athlete.id %}" class="text-decoration-none">
+                                <div class="d-flex">
+                                    <img src="{% static athlete.picture.url %}" alt="Profile" style="vertical-align: middle;
+                                                    width: 40px;
+                                                    height: 40px;
+                                                    border-radius: 50%;
+                                                    margin: 5px">
+                                    <p class="my-auto text-primary">@{{athlete.usernm}}</p>
+                                </div>
+                            </a>
+                        </td>
+                        <td class="align-middle text-center">{{athlete.total_points}} XP</td>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% endif %}
+        </div>
+
+</body>
+{% endif %}

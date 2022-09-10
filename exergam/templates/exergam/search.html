@@ -1,0 +1,102 @@
+﻿{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'exergam/style.css' %}">
+
+{% load socialaccount %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% bootstrap_messages %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+</head>
+{% if user.is_authenticated %}
+<nav class="navbar navbar-expand-lg navbar-light" style="background: linear-gradient(to bottom, #71e1ff 30%, #1c56ff 100%">
+    <a class="navbar-brand" href="#">Home</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'exergam:entry'%}">Add Exercise</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'exergam:location_option' %}">Add Post</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'exergam:feed' %}">Post Feed</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'exergam:leaderboard' %}">Leaderboards</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'exergam:search' %}">Search</a>
+            </li>
+            <li class="nav-item active">
+
+                <a class="nav-link" href="{% url 'exergam:edit' %}">Edit Profile</a>
+
+            </li>
+        </ul>
+    </div>
+    <ul class="nav navbar-nav ml-auto">
+        <p class="nav-link">{{ user.email }}</p>
+        <li>
+            <a href="{% url 'exergam:profile' user.id %}" class="nav-link">
+                <img src="{% static user.picture.url %}" alt="Profile" style="
+                    vertical-align: middle;
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;">
+            </a>
+        </li>
+        <button class="btn btn-primary w50" style="background-color:black">
+            <a href="{% url 'exergam:logout' %}"
+               class="nav-link text-reset">Logout</a>
+        </button>
+    </ul>
+</nav>
+
+<!--This is the for the line of exercising figures at the top of the screen -->
+<div class="row">
+    <div class="col-sm">
+        <img src="../../static/exergam/images/exercises1.jpeg" class="rounded float-start" style="
+                    vertical-align: middle;
+                    width: 100%;
+                    height: 40%;
+                    border-radius: 50%;
+                    ">
+    </div>
+    <div class="col-sm">
+        <img src="../../static/exergam/images/exercises5.jpeg" class="rounded mx-auto d-block" style="
+                    vertical-align: middle;
+                    width: 100%;
+                    height: 40%;
+                    border-radius: 50%;
+                    ">
+    </div>
+</div>
+
+<body style="background-color:black;">
+    <div class="container text-primary" style="font-family:optima;">
+        <h2>{{ 'Search a name, username, or email'}}</h2>
+        <form action="{% url 'exergam:find' %}" method="get" class='form'>
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="search">Search:</label>
+                <input type="text" class="form-control" placeholder="" id="search_user" name="search_user">
+            </div>
+            <input type="submit" value="Search" class="btn btn-outline-primary">
+        </form>
+    </div>
+</body>
+{% endif %}

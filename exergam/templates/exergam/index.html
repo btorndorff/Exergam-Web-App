@@ -1,0 +1,51 @@
+﻿<!--The login page-->
+<!--https://django-allauth.readthedocs.io/en/latest/templates.html-->
+{% load static %}
+
+{% load socialaccount %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% bootstrap_messages %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static 'exergam/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+    <title>Login</title>
+</head>
+
+<body id="login-background">
+    <div class="container mx-auto h-100 d-flex flex-column align-items-center justify-content-start pt-5 ">
+        <h1 class="display-1 pt-5" style="color:white;text-align:center;">exergam</h1>
+        <div class="row justify-content-center align-items-center w-100" id="slide-bottom" style="text-align: center;">
+            <div class="col-4">
+                <div class="card rounded mx-auto mt-5 " style="box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);background-color: rgba(255, 255, 255, 0.7);">
+                    <div class="card-body">
+                        <h1 class="card-title text-">Welcome</h1>
+                        <a class="btn btn-outline-dark" href="{% provider_login_url 'google' %}" role="button"
+                            style="text-transform:none;">
+                            <img width="20px" style="margin-bottom:3px; margin-right:5px" alt="Google sign-in"
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+                            Login with Google
+                        </a>
+                        <!--<p class="text-muted">or</p>
+                        <a class="btn btn-outline-primary" href="{% provider_login_url 'google' %}" role="button"
+                            style="text-transform:none;">
+                            Signup 
+                        </a>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+
+
+</html>

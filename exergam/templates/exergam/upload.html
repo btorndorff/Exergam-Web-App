@@ -1,0 +1,118 @@
+﻿{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'exergam/style.css' %}">
+
+{% load socialaccount %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% bootstrap_messages %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload</title>
+</head>
+
+{% if error_message %}
+<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+{% if user.is_authenticated %}
+<nav class="navbar navbar-expand-lg navbar-light" style="background: linear-gradient(to bottom, #71e1ff 30%, #1c56ff 100%">
+    <a class="navbar-brand" href="{% url 'exergam:home' %}">Home</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'exergam:entry' %}">Add Exercise</a>
+            </li>
+        </ul>
+    </div>
+    <ul class="nav navbar-nav ml-auto">
+        <p class="nav-link">{{ user.email }}</p>
+        <li>
+            <a href="{% url 'exergam:profile' user.id %}" class="nav-link">
+                <img src="{% static user.picture.url %}" alt="Profile" style="
+                    vertical-align: middle;
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;">
+            </a>
+        </li>
+        <button class="btn btn-primary w50" style="background-color:black">
+            <a href="{% url 'exergam:logout' %}"
+               class="nav-link text-reset">Logout</a>
+        </button>
+    </ul>
+</nav>
+<div class="row">
+<div class="col-sm">
+    <img src="../../static/exergam/images/exercises1.jpeg" class="rounded float-start" style="
+                    vertical-align: middle;
+                    width: 100%;
+                    height: 40%;
+                    border-radius: 50%;
+                    ">
+</div>
+<div class="col-sm">
+    <img src="../../static/exergam/images/exercises5.jpeg" class="rounded mx-auto d-block" style="
+                    vertical-align: middle;
+                    width: 100%;
+                    height: 40%;
+                    border-radius: 50%;
+                    ">
+</div>
+</div>
+
+<body style="background-color:black;">
+
+    <div class="container" style="font-family:optima;">
+
+        <h2 class="text-primary">{{ 'Upload an exercise!'}}</h2>
+        <form action="{% url 'exergam:upload' %}" method="post" class='form'>
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="text-primary">Exercise Type</label>
+                <select name="exercise_type_dropdown" id="exercise_type_dropdown">
+                    <option value="Basketball">Basketball</option>
+                    <option value="Baseball">Baseball</option>
+                    <option value="Climbing">Climbing</option>
+                    <option value="Football">Football</option>
+                    <option value="Frisbee">Frisbee</option>
+                    <option value="Soccer">Soccer</option>
+                    <option value="Spikeball">Spikeball</option>
+                    <option value="Swimming">Swimming</option>
+                    <option value="Tennis">Tennis</option>
+                    <option value="Track + Field">Track + Field</option>
+                    <option value="Volleyball">Volleyball</option>
+                    <option value="Walking">Walking</option>
+                    <option value="Weightlifting">Weightlifting</option>
+                    <option value="Yoga">Yoga</option>
+                    <option value="Cardio">Cardio</option>
+                    <option value="Strength">Strength</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="text-primary">Description</label>
+                <input type="text" class="form-control" placeholder="What did you do?" name="description" , id="description">
+            </div>
+            <div class="form-group">
+                <label class="text-primary" for="exampleInputPassword1">Date</label>
+                <input type="datetime-local" class="form-control" placeholder="YYYY-MM-DD HH:MM" id="exercise_date"
+                       name="exercise_date">
+            </div>
+            <div class="form-group">
+                <label class="text-primary" for="exampleInputPassword1">Duration in minutes</label>
+                <input type="text" class="form-control" placeholder="For how long did you perform this activity?" id="exercise_duration" name="exercise_duration">
+            </div>
+            <input class="btn btn-outline-primary" type="submit" value="Upload">
+        </form>
+    </div>
+</body>
+{% endif %}

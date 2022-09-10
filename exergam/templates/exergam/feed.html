@@ -1,0 +1,312 @@
+﻿{% load static %}
+
+{% load socialaccount %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% bootstrap_messages %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="{% static 'exergam/style.css' %}">
+    <title>Home</title>
+</head>
+
+<body style="background-color:#f7f7fa">
+    <div class="">
+        {% if user.is_authenticated %}
+        <nav class="navbar navbar-expand-lg navbar-light sticky-top"
+            style="background-color: #fff;border-bottom: 1px solid rgba(var(--b6a,219,219,219),1)">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="container">
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav">
+                        <a class="navbar-brand" href="{% url 'exergam:feed' %}">
+                            <img src="../../static/images/icons/eg_logo.png" alt="exergam" style="height: 50px;"></a>
+                    </ul>
+                </div>
+
+                <form action="{% url 'exergam:find' %}" method="get" class="form-inline my-2 my-lg-0 col mr-5">
+                    {% csrf_token %}
+                    <input class="form-control" type="text" placeholder="Search" id="search_user" name="search_user"
+                        aria-label="Search">
+                    <input type="submit" value="&#x1F50D;" class="btn btn-info my-2 my-sm-0">
+                </form>
+
+                <ul class="nav navbar-nav ml-auto d-flex align-items-baseline">
+                    <li class="nav-item active mr-1">
+                        <a class="nav-link text-white" href="{% url 'exergam:feed' %}"> <img
+                                src="../../static/images/icons/home.PNG" alt="" style="height: 30px;filter: invert(1)">
+                            <span class="sr-only">(current)</span></a>
+                    </li>
+
+                    <li class="nav-item active mr-1">
+                        <a class="nav-link text-white" href="{% url 'exergam:leaderboard' %}"><img
+                                src="../../static/images/icons/medal.png" alt="" style="height: 30px;"></a>
+                    </li>
+
+                    <li class="nav-item dropdown mr-1">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:#000000">
+                            <img src="{% static user.picture.url %}" alt="Profile" style="
+                            width: 45px;
+                            height: 45px;
+                            border-radius: 50%;">
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'exergam:profile' user.id %}">My Profile</a></li>
+                            <div class="dropdown-divider"></div>
+                            <li><a class="dropdown-item" href="{% url 'exergam:logout' %}">Log Out</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown mr-1">
+                        <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            <img src="../../static/images/add.png" alt="Profile" style="height: 30px; width: 30px;">
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" data-toggle="modal" data-target="#AddPostModal" href="#"> Add
+                                    Post</a></li>
+                            <li><a class="dropdown-item" data-toggle="modal" data-target="#AddExerciseModal"
+                                    href="#">Add Exercise</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="modal fade" id="AddPostModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Add Post</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h3 class="">Add a Location to your Post</h3>
+                        <form action="{% url 'exergam:select_location' %}" method="GET" class='form'>
+                            {% csrf_token %}
+                            <input type="text" class="form-control" placeholder="Where did you go?" name="location" ,
+                                id="location">
+                            <div class="d-flex mt-3 mx-auto">
+                                <a class="btn btn-outline-danger mr-1" href="{% url 'exergam:new_post' 1 %}">Skip</a>
+                                <input type="submit" value="Search" class="btn btn-primary">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="AddExerciseModal" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Add Exercise</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <form action="{% url 'exergam:upload' %}" method="post" class='form'>
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label class="text-primary">Exercise Type</label>
+                                <select name="exercise_type_dropdown" id="exercise_type_dropdown">
+                                    <option value="Basketball">Basketball</option>
+                                    <option value="Baseball">Baseball</option>
+                                    <option value="Climbing">Climbing</option>
+                                    <option value="Football">Football</option>
+                                    <option value="Frisbee">Frisbee</option>
+                                    <option value="Soccer">Soccer</option>
+                                    <option value="Spikeball">Spikeball</option>
+                                    <option value="Swimming">Swimming</option>
+                                    <option value="Tennis">Tennis</option>
+                                    <option value="Track + Field">Track + Field</option>
+                                    <option value="Volleyball">Volleyball</option>
+                                    <option value="Walking">Walking</option>
+                                    <option value="Weightlifting">Weightlifting</option>
+                                    <option value="Yoga">Yoga</option>
+                                    <option value="Cardio">Cardio</option>
+                                    <option value="Strength">Strength</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="text-primary">Description</label>
+                                <input type="text" class="form-control" placeholder="What did you do?"
+                                    name="description" , id="description">
+                            </div>
+                            <div class="form-group">
+                                <label class="text-primary" for="exampleInputPassword1">Date</label>
+                                <input type="datetime-local" class="form-control" placeholder="YYYY-MM-DD HH:MM"
+                                    id="exercise_date" name="exercise_date">
+                            </div>
+                            <div class="form-group">
+                                <label class="text-primary" for="exampleInputPassword1">Duration in minutes</label>
+                                <input type="text" class="form-control"
+                                    placeholder="For how long did you perform this activity?" id="exercise_duration"
+                                    name="exercise_duration">
+                            </div>
+                            <div class="mx-auto">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <input class="btn btn-outline-primary"
+                                    onclick="return confirm('Are you Sure? You will not be able to delete this exercise.')"
+                                    type="submit" value="Upload">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if user.usernm == "exergam_user" and user.first_nm == "Exergam" %}
+        <script>
+            $(window).on('load', function () {
+                $('#signup').modal('show');
+            });
+        </script>
+        <div class="modal fade" id="signup" tabindex="-1" role="dialog" aria-labelledby="editModalTitle"
+            aria-hidden="false">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModaltitle">Sign Up</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form method="post" action="{% url 'exergam:edit' %}" class='form text-primary'>
+                        <div class="modal-body">
+                            <h4 class="text-center text-primary">Create Your Profile</h4>
+                            <div class="container text-center">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <p><label for="id_usernm">Username:</label> <input type="text" name="usernm"
+                                        value="{{user.usernm}}" maxlength="40" required="" id="id_usernm"></p>
+                                <p><label for="id_first_nm">First Name:</label> <input type="text" name="first_nm"
+                                        value="{{user.first_nm}}" maxlength="40" required="" id="id_first_nm"></p>
+                                <p><label for="id_last_nm">Last Name:</label> <input type="text" name="last_nm"
+                                        value="{{user.last_nm}}" maxlength="40" required="" id="last_nm"></p>
+
+                                <img src="{% static user.picture.url %}" alt="Profile" id="profile" style="
+                                        margin: 1em;
+                                        width: 150px;
+                                        height: 150px;
+                                        border-radius: 50%;">
+                                <div class="form-group">
+                                    <label class="text-primary">Profile Picture</label>
+                                    <select
+                                        onchange="$('#profile').attr('src', '../../static/images' + this.options[this.selectedIndex].value.substring(this.options[this.selectedIndex].value.indexOf('/', this.options[this.selectedIndex].value.indexOf('/') + 1)));"
+                                        name="picture" id="picture">
+                                        <option value={{user.picture}} selected="selected">Current
+                                            Profile Picture</option>
+                                        <option value="../images/default.jpeg">Default</option>
+                                        <option value="../images/1.jpg">Ram</option>
+                                        <option value="../images/2.jpg">Otter</option>
+                                        <option value="../images/3.jpg">Dog 1</option>
+                                        <option value="../images/4.jpg">Donkey</option>
+                                        <option value="../images/5.jpg">Rooster</option>
+                                        <option value="../images/6.jpg">Ostrich</option>
+                                        <option value="../images/7.jpg">Dog 2</option>
+                                        <option value="../images/8.jpg">Mouse</option>
+                                        <option value="../images/9.jpg">Rabbit</option>
+                                        <option value="../images/10.jpg">Camel</option>
+                                        <option value="../images/11.jpg">Pig</option>
+                                        <option value="../images/12.jpg">Baboon</option>
+                                        <option value="../images/13.jpg">Fox</option>
+                                        <option value="../images/14.jpg">Owl</option>
+                                        <option value="../images/15.jpg">Cat</option>
+                                        <option value="../images/16.jpg">Bull</option>
+                                        <option value="../images/17.jpg">Polar Bear</option>
+                                        <option value="../images/18.jpg">Dog 3</option>
+                                        <option value="../images/19.jpg">Wolf</option>
+                                        <option value="../images/20.jpg">Penguin</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" value="Create" class="btn btn-primary mx-auto">
+                        </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+
+        <div class="mx-auto mt-3 container" style="width: 65%;">
+            {% if post_list %}
+
+            {% for post in post_list %}
+            <div class="card rounded container mb-2"
+                style="box-shadow: 0px 8px 24px rgb(13 13 18 / 4%);background-color: #ffffffe5;float: left;min-width: 100%;">
+                <div class="d-flex mt-2 ">
+                    <a href="{% url 'exergam:profile' post.usr.id %}"><img src="{% static post.usr.picture.url %}"
+                            alt="Profile" class="avatar"></a>
+                    <div class="d-flex flex-column pl-3">
+                        <h5 style="margin: 0; margin-top: 4px;">{{post.usr.first_nm}} {{post.usr.last_nm}}</h5>
+                        <p class="text-muted">{{post.date}} at {{post.location}}</h5>
+                            <p>{{post.text}}</p>
+                    </div>
+                </div>
+                <hr style="background-color:white;" />
+                <b class="text-primary"> Comments:</b>
+                {% for comment in post.comment_set.all %}
+                <div class="d-flex">
+                    <img src="{% static comment.author.picture.url %}" alt="Profile" style="vertical-align: middle;
+                                width: 40px;
+                                height: 40px;
+                                border-radius: 50%;
+                                margin: 5px"></a>
+                    <div class="d-flex flex-column pl-3">
+                        <p style="margin: 0; margin-top: 6px; line-height: 80%;">
+                            {{comment.author.first_nm}}
+                            {{comment.author.last_nm}} on {{comment.date}}
+                        </p>
+                        <p class="text-muted text-wrap" style="display: inline-block; word-wrap: wrap;
+                        word-break: break-all;">{{comment.text}}</h5>
+                    </div>
+                </div>
+                {% endfor %}
+                <form action="{% url 'exergam:comment_own' post.id %}" method="post" class='form'>
+                    <textarea class="form-control" id="comment_text" name="comment_text"
+                        placeholder="Write a comment here!" rows="3"></textarea>
+                    {% csrf_token %}
+                    <p></p>
+                    <input class="btn btn-outline-primary mb-1" type="submit" value="Comment">
+                </form>
+            </div>
+            {% endfor %}
+
+            {% else %}
+            <p></p>
+            <h2 class="display-4text-center my-5">This is your Feed! Read below to get started.</h2>
+            <h5 class="display-4text-center my-5">1. Edit your profile by clicking on your profile picture in the top
+                right.</h5>
+            <h5 class="display-4text-center my-5">2. Log your exercises to earn points/badges and compete with others!
+            </h5>
+            <h5 class="display-4text-center my-5">3. Find users to follow by searching, or scanning the leaderboards.
+                Their posts will show up in your Feed.</h5>
+
+            {% endif %}
+        </div>
+
+
+
+</body>
+{% endif %}

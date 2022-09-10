@@ -1,0 +1,171 @@
+﻿<!--home.html formats the first page the user goes to after login-->
+{% load static %}
+
+{% load socialaccount %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% bootstrap_messages %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static 'exergam/style.css' %}">
+    <title>Home</title>
+</head>
+
+<body>
+    <div class="">
+        {% if user.is_authenticated %}
+        <nav class="navbar navbar-expand-lg navbar-light sticky-top" style="background-color: #4056a1;box-shadow: 0px 8px 24px rgb(13 13 18 / 10%);">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="container">
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav">
+                        <a class="navbar-brand" style="color: #f13c20" href="{% url 'exergam:feed' %}">exergam</a>
+                        <li class="nav-item active">
+                            <a class="nav-link text-white" href="{% url 'exergam:feed' %}">Home <span
+                                    class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link text-white" href="{% url 'exergam:leaderboard' %}">Leaderboards</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link text-white" href="{% url 'exergam:search' %}">Search</a>
+                        </li>
+                    </ul>
+                </div>
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #fff;">
+                            <img src="../../static/images/login.jpeg" alt="Profile" class="avatar">
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'exergam:profile' user.id %}">My Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'exergam:edit' %}">Edit Profile</a></li>
+                            <div class="dropdown-divider"></div>
+                            <li><a class="dropdown-item" href="{% url 'exergam:logout' %}">Log Out</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown mr-1">
+                        <a class="nav-link" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img src="../../static/images/add.png" alt="Profile" class="mt-3"
+                                style="height: 25px; width: 25px;filter: invert(1);">
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'exergam:location_option' %}">Add Post</a></li>
+                            <li><a class="dropdown-item" href="{% url 'exergam:entry' %}">Add Exercise</a></li>
+                        </ul>
+                        
+                    </li>                
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="">
+                <h1 class="text-primary">Rewards</h1>
+                {% if user.unranked %}<b class="text-primary">Current Rank:</b>
+                <p>{{user.rank}}</p> {% endif %}
+                {% if user.bronze %}<b class="text-primary">Current Rank:</b>
+                <p style="background-color:#826d09">{{user.rank}}</p> {% endif %}
+                {% if user.silver %}<b class="text-primary">Current Rank:</b>
+                <p style="background-color:#808080">{{user.rank}}</p> {% endif %}
+                {% if user.gold %}<b class="text-primary">Current Rank:</b>
+                <p style="background-color:#ffd800; color:black">{{user.rank}}</p> {% endif %}
+                {% if user.platinum %}<b class="text-primary">Current Rank:</b>
+                <p style="background-color:#f8f9ff; color:black">{{user.rank}}</p> {% endif %}
+                {% if user.diamond %}<b class="text-primary">Current Rank:</b>
+                <p style="background-color:#7afaff; color:black">{{user.rank}}</p> {% endif %}
+                <p>{{user.rewards.reward_type}}</p>
+    
+                <p>{{user.total_points}} points</p>
+                <div class="progress">
+                    <div class="progress-bar" id="points" role="progressbar" style="width: 0%" aria-valuenow="0"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <script>
+                    var x = document.getElementById("points");
+                    var points_string = {{user.total_points}};
+                    var points = parseInt(points_string, 10);
+                    var percent = (points / 2190000) * 100;
+                    var percent_whole = Math.round(percent);
+                    x.style.width = percent_whole + "%";
+                </script>
+            </div>
+
+            <div class="my-5">
+                <h1 class="text-primary">Your Posts</h1>
+                {% for post in user.post_set.all %}
+                <div class="card rounded container mb-2" style="box-shadow: 0px 8px 24px rgb(13 13 18 / 4%);background-color: #ffffffe5;float: left;min-width: 100%;">
+                    <div class="d-flex mt-2">
+                        <img src="../../static/images/login.jpeg" alt="Profile" class="avatar"></a>
+                        <div class="d-flex flex-column pl-3">
+                            <h5 style="margin: 0; margin-top: 4px;">{{user.first_nm}} {{user.last_nm}}</h5>
+                            <p class="text-muted">{{post.date}} at {{post.location}}</h5>
+                            <p>{{post.text}}</p>
+                        </div>
+                    </div>
+                    <hr style="background-color:white;" />
+                    <b class="text-primary"> Comments:</b>
+                    {% for comment in post.comment_set.all %}
+                    <div class="d-flex">
+                        <img src="../../static/images/login.jpeg" alt="Profile" style="vertical-align: middle;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        margin: 5px"></a>
+                        <div class="d-flex flex-column pl-3">
+                            <p style="margin: 0; margin-top: 6px; line-height: 80%;">{{user.first_nm}} {{user.last_nm}} on {{comment.date}}</p>
+                            <p class="text-muted text-wrap" style="width: 50%;">{{comment.text}}</h5>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <form action="{% url 'exergam:comment_own' post.id %}" method="post" class='form'>
+                        <textarea class="form-control" id="comment_text" name="comment_text"
+                            placeholder="Write a comment here!" rows="3"></textarea>
+                        {% csrf_token %}
+                        <p></p>
+                        <input class="btn btn-outline-primary" type="submit" value="Comment">
+                    </form>
+                    {% endfor %}
+                </div>
+                
+
+                <div class="my-5">
+                    <h1 class="text-primary">Exercise History</h1>
+                    {% for entry in user.exerciseentry_set.all %}
+                    <div class="card rounded container w-50 mb-2" style="box-shadow: 0px 8px 24px rgb(13 13 18 / 4%);background-color: #ffffffe5;float: left;">
+                        <div class="d-flex my-2">
+                            <img class="avatar" src="../../static/images/login.jpeg" alt="Profile">
+                            <div class="d-flex flex-column pl-3">
+                                <h5 style="margin: 0; margin-top: 4px;">{{user.first_nm}} {{user.last_nm}}</h5>
+                                <p class="text-muted">{{entry.exercise_date}}</p>
+                            </div>
+                        </div>
+                        <p class=""><b class="text-primary">Type:</b> {{entry.exercise_type}}</p>
+                        <p class=""><b class="text-primary">Duration:</b> {{entry.exercise_duration}} minutes</p>
+                        <p class=""><b class="text-primary">Description:</b> {{entry.description}}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+            </div>
+        </div>
+
+        {% endif %}
+    </div>
+
+</body>
+
+</html>

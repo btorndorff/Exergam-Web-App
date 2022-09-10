@@ -1,0 +1,45 @@
+body {
+    height: 100%;
+    margin: 0;
+}
+
+#login-background {
+    background: url(images/login.jpeg) center no-repeat;
+    background-attachment: fixed;
+    background-size: contain;
+}
+
+.avatar {
+    vertical-align: middle;
+    width: 10px;
+    height: 30px;
+    vertical-align: middle;
+    margin: 2px
+}
+
+
+
+.link-unstyled {
+    &,
+    &:visited,
+    &:hover,
+    &:active,
+    &:focus,
+    &:active:hover {
+      font-style: inherit;
+      color: inherit;
+      background-color: transparent;
+      font-size: inherit;
+      text-decoration: none;
+      font-variant: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+      font-family: inherit;
+      border-radius: inherit;
+      border: inherit;
+      outline: inherit;
+      box-shadow: inherit;
+      padding: inherit;
+      vertical-align: inherit;
+    }
+  }
